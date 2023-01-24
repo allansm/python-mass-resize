@@ -15,44 +15,36 @@ def filename(path):
     
     return os.path.basename(name.path)
 
-def files(path,lamb=None):
+def files(path,lamb):
     import os
 
     global fulllog
+
+    base = 0
+    for root, dirs, files in os.walk(path):
+        base+=len(files)
     
-    fold = os.walk(path)
-    ret = []
+    total = base
+    base = 100/base
+    
+    bar = "█"
+    blank = " "
 
-    once = True
+    i = 0
+    last = 0
 
-    for root, dirs, files in fold:
-        if(once):
-            base = (100/len(files))
-            
-            bar = "█"
-            blank = " "
-
-            i = 0
-            last = 0
-
+    for root, dirs, files in os.walk(path):
         for name in files:
-            if(lamb != None):
-                lamb(os.path.realpath(os.path.join(root, name)))
-                if(once):
-                    i+=1
-                    if(base*i-last > 5):
-                        clear()
-                        print(fulllog)
-                        print("|"+bar*int(base*i/3), end="")
-                        print(blank*(int(base*len(files)/3)-int(base*i/3))+"|")
-                        
-                        last = base*i
+            lamb(os.path.realpath(os.path.join(root, name)))
             
-            ret.append(os.path.realpath(os.path.join(root, name)))
-        
-        once = False
-     
-    return ret
+            i+=1
+            if(base*i-last > 1):
+                clear()
+                print(fulllog)
+                print("|"+bar*int(base*i/3), end="")
+                print(blank*(int(base*total/3)-int(base*i/3))+"|")
+                
+                last = base*i
 
 def resize(f,percent):
     global fulllog
