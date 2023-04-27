@@ -99,5 +99,3 @@ def run():
     callback = lambda file,percent=int(args.percent.replace("%","")): resize(file,percent)
 
     files("output", callback)
-
-run()
